@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+set -x
+
 source "${GHA_SCRIPTS_DIR}/.github/workflows/common.sh"
 
 prepare_git_repo
