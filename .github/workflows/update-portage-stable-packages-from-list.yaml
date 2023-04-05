@@ -29,6 +29,7 @@ jobs:
         with:
           repository: flatcar/flatcar-build-scripts
           path: flatcar-build-scripts
+          ref: krnowak/swg-top-level-dir
       - name: Update listed packages
         id: update-listed-packages
         run: |
