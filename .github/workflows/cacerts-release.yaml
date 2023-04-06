@@ -48,7 +48,6 @@ jobs:
         if: steps.figure-out-branch.outputs.SKIP == 0
         id: setup-flatcar-sdk
         env:
-          GHA_SCRIPTS_DIR: "${{ github.workspace }}/gha"
           WORK_SCRIPTS_DIR: "${{ github.workspace }}/work"
           CHANNEL: ${{ steps.figure-out-branch.outputs.LABEL }}
           # This will be empty for the main channel, but we handle

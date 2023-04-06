@@ -28,4 +28,4 @@ generate_update_changelog 'ca-certificates' "${VERSION_NEW}" "${URL}" 'ca-certif
 commit_changes app-misc ca-certificates ca-certificates
 
 echo "VERSION_OLD=${VERSION_OLD}" >>"${GITHUB_OUTPUT}"
-echo "UPDATE_NEEDED=1" >>"${GITHUB_OUTPUT}"
+echo 'UPDATE_NEEDED=1' >>"${GITHUB_OUTPUT}"
