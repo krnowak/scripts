@@ -1,0 +1,51 @@
+name: Get the latest Go release for main
+on:
+  schedule:
+    - cron:  '15 7 * * 1'
+  workflow_dispatch:
+
+jobs:
+  get-go-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out scripts
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: scripts
+      - name: Fetch latest Go releases
+        id: fetch-latest-releases
+        env:
+          GO_VERSIONS: "1.18 1.19"
+        run: |
+          versionsMain=()
+          for goversion in ${GO_VERSIONS}; do
+            versionsMain+=($(git ls-remote --tags https://github.com/golang/go | cut -f2 | sed -n "/refs\/tags\/go${goversion}\(\.[0-9]*\)\?$/s/^refs\/tags\/go//p" | egrep -v -e '(beta|rc)' | sort -ruV | head -n1))
+          done
+          echo "VERSIONS_NEW=${versionsMain[*]}" >>"${GITHUB_OUTPUT}"
+      - name: Set up Flatcar SDK
+        id: setup-flatcar-sdk
+        env:
+          WORK_SCRIPTS_DIR: "${{ github.workspace }}/scripts"
+          CHANNEL: main
+        run: scripts/.github/workflows/setup-flatcar-sdk.sh
+      - name: Apply patch for main
+        id: apply-patch-main
+        env:
+          GHA_SCRIPTS_DIR: "${{ github.workspace }}/scripts"
+          WORK_SCRIPTS_DIR: "${{ github.workspace }}/scripts"
+          VERSIONS_NEW: ${{ steps.fetch-latest-releases.outputs.VERSIONS_NEW }}
+          PACKAGES_CONTAINER: ${{ steps.setup-flatcar-sdk.outputs.PACKAGES_CONTAINER }}
+          SDK_NAME: ${{ steps.setup-flatcar-sdk.outputs.SDK_NAME }}
+        run: scripts/.github/workflows/go-apply-patch.sh
+      - name: Create pull request for main
+        uses: peter-evans/create-pull-request@v4
+        if: steps.apply-patch-main.outputs.UPDATE_NEEDED == 1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: scripts
+          branch: ${{ steps.apply-patch-main.outputs.BRANCH_NAME }}
+          base: main
+          title: Upgrade Go from ${{ steps.apply-patch-main.outputs.VERSIONS_OLD }} to ${{ steps.apply-patch-main.outputs.VERSIONS_NEW }}
+          body: Subject says it all.
+          labels: main
