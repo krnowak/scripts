@@ -4,9 +4,18 @@
 # NOTE: When masking a USE flag due to missing keywords, please file a keyword
 # request bug for the hppa arch.
 
+# Sam James <sam@gentoo.org> (2023-04-16)
+# net-libs/libcloudproviders not keyworded here
+x11-libs/gtk+ cloudproviders
+
+# Sam James <sam@gentoo.org> (2023-04-14)
+# Needs unkeyworded dev-python/sympy
+dev-python/nbval test
+
 # Michał Górny <mgorny@gentoo.org> (2023-03-14)
 # Requires virtual/pandoc.
 dev-python/nbclassic doc
+dev-python/nbval doc
 
 # Hans de Graaff <graaff@gentoo.org> (2023-02-27)
 # Depends on virtual/rust
@@ -152,6 +161,7 @@ media-libs/rubberband jni
 # media-libs/libavif isn't keyworded here
 media-libs/gd avif heif
 media-gfx/graphicsmagick heif
+www-client/links avif
 
 # Georgy Yakovlev <gyakovlev@gentoo.org> (2021-01-19)
 # uchardet not stable/keyworded yet on this arch
